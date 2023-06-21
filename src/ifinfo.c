@@ -40,7 +40,7 @@ int getifinfo(const char *iface)
 		return 1;
 	} else {
 		if (debug)
-			printf("Failed to use %s as source.\n", PROCNETDEV);
+			printf("Failed to use %s as source.\n", cfg.procnetdev);
 	}
 
 	/* try getting interface info from /sys */
@@ -134,7 +134,7 @@ int getiflist_linux(iflist **ifl, const int getspeed, const int validate)
 	char procline[512];
 	uint32_t bwlimit = 0;
 
-	if ((fp = fopen(PROCNETDEV, "r")) != NULL) {
+	if ((fp = fopen(cfg.procnetdev, "r")) != NULL) {
 
 		/* make list of interfaces */
 		while (fgets(procline, 512, fp) != NULL) {
@@ -158,7 +158,7 @@ int getiflist_linux(iflist **ifl, const int getspeed, const int validate)
 
 	} else {
 
-		if ((dp = opendir(SYSCLASSNET)) != NULL) {
+		if ((dp = opendir(cfg.sysclassnet)) != NULL) {
 
 			/* make list of interfaces */
 			while ((di = readdir(dp))) {
@@ -221,9 +221,9 @@ int readproc(const char *iface)
 	char temp[4][64], procline[512], *proclineptr, ifaceid[MAXIFLEN + 1];
 	int check;
 
-	if ((fp = fopen(PROCNETDEV, "r")) == NULL) {
+	if ((fp = fopen(cfg.procnetdev, "r")) == NULL) {
 		if (debug)
-			printf("Error (debug): Unable to read %s: %s\n", PROCNETDEV, strerror(errno));
+			printf("Error (debug): Unable to read %s: %s\n", cfg.procnetdev, strerror(errno));
 		return 0;
 	}
 
@@ -276,7 +276,7 @@ int readsysclassnet(const char *iface)
 
 	strncpy_nt(ifinfo.name, iface, MAXIFLEN);
 
-	snprintf(path, 64, "%s/%s/statistics", SYSCLASSNET, iface);
+	snprintf(path, 64, "%s/%s/statistics", cfg.sysclassnet, iface);
 
 	if (debug)
 		printf("path: %s\n", path);
@@ -418,7 +418,7 @@ uint32_t getifspeed(const char *iface)
 	char file[64], buffer[64];
 
 	// value in file is Mbits per second
-	snprintf(file, 64, "%s/%s/speed", SYSCLASSNET, iface);
+	snprintf(file, 64, "%s/%s/speed", cfg.sysclassnet, iface);
 
 	if ((fp = fopen(file, "r")) == NULL) {
 		if (debug)

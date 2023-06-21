@@ -94,8 +94,8 @@ uint64_t getbtime(void)
 	int check;
 	char temp[64], statline[128];
 
-	if ((fp = fopen("/proc/stat", "r")) == NULL) {
-		snprintf(errorstring, 1024, "Unable to read /proc/stat: %s", strerror(errno));
+	if ((fp = fopen(cfg.procstat, "r")) == NULL) {
+		snprintf(errorstring, 1024, "Unable to read %s: %s", cfg.procstat, strerror(errno));
 		printe(PT_Error);
 		if (noexit) {
 			return 0;
@@ -117,7 +117,7 @@ uint64_t getbtime(void)
 	fclose(fp);
 
 	if (check == 0) {
-		snprintf(errorstring, 1024, "btime missing from /proc/stat.");
+		snprintf(errorstring, 1024, "btime missing from %s", cfg.procstat);
 		printe(PT_Error);
 		if (noexit) {
 			return 0;

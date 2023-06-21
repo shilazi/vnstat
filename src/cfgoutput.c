@@ -27,6 +27,14 @@ void printcfgfile(void)
 	defaultcomment(strcmp(cfg.locale, LOCALE) == 0);
 	printf("Locale \"%s\"\n\n", cfg.locale);
 
+	printf("# location of the /proc directory for container get host statistics\n");
+	defaultcomment(strcmp(cfg.procfspath, PROCFSPATH) == 0);
+	printf("ProcfsPath \"%s\"\n\n", cfg.procfspath);
+
+	printf("# location of the /sys directory for container get host statistics\n");
+	defaultcomment(strcmp(cfg.sysfspath, SYSFSPATH) == 0);
+	printf("SysfsPath \"%s\"\n\n", cfg.sysfspath);
+
 	printf("# date output formats for -d, -m, -t and -w\n");
 	defaultcomment(strcmp(cfg.dformat, DFORMAT) == 0);
 	printf("DayFormat    \"%s\"\n", cfg.dformat);

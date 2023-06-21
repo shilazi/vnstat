@@ -14,6 +14,8 @@ int loadcfg(const char *cfgfile, const ConfigType type)
 		 {"Interface", cfg.iface, 0, MAXIFPARAMLEN, 0},
 		 {"DatabaseDir", cfg.dbdir, 0, 512, 0},
 		 {"Locale", cfg.locale, 0, 32, 0},
+		 {"ProcfsPath", cfg.procfspath, 0, 512, 0},
+		 {"SysfsPath", cfg.sysfspath, 0, 512, 0},
 		 {"MonthRotate", 0, &cfg.monthrotate, 0, 0},
 		 {"MonthRotateAffectsYears", 0, &cfg.monthrotateyears, 0, 0},
 		 {"DayFormat", cfg.dformat, 0, 64, 0},
@@ -261,6 +263,26 @@ void validatecfg(const ConfigType type)
 		printe(PT_Config);
 	}
 
+	if (cfg.procfspath[0] != '/') {
+		strncpy_nt(cfg.procfspath, PROCFSPATH, 512);
+		snprintf(errorstring, 1024, "ProcfsPath %s", noslashstart);
+		printe(PT_Config);
+	}
+
+	if (cfg.sysfspath[0] != '/') {
+		strncpy_nt(cfg.sysfspath, SYSFSPATH, 512);
+		snprintf(errorstring, 1024, "SysfsPath %s", noslashstart);
+		printe(PT_Config);
+	}
+
+	/* get variable values dynamically */
+	/* ProcFsPath/stat, default /proc/stat */
+	/* ProcFsPath/net/dev, default /proc/net/dev */
+	/* SysFsPath/class/net, default /sys/class/net */
+	snprintf(cfg.procstat, 512, "%s%s", cfg.procfspath, STAT);
+	snprintf(cfg.procnetdev, 512, "%s%s", cfg.procfspath, NETDEV);
+	snprintf(cfg.sysclassnet, 512, "%s%s", cfg.sysfspath, CLASSNET);
+
 	if (cfg.logfile[0] != '/') {
 		strncpy_nt(cfg.logfile, LOGFILE, 512);
 		snprintf(errorstring, 1024, "LogFile %s", noslashstart);
@@ -390,6 +412,17 @@ void defaultcfg(void)
 	cfg.topdayentries = TOPDAYENTRIES;
 
 	strncpy_nt(cfg.dbdir, DATABASEDIR, 512);
+
+	strncpy_nt(cfg.procfspath, PROCFSPATH, 512);
+	strncpy_nt(cfg.sysfspath, SYSFSPATH, 512);
+	/* get variable values dynamically */
+	/* ProcFsPath/stat, default /proc/stat */
+	/* ProcFsPath/net/dev, default /proc/net/dev */
+	/* SysFsPath/class/net, default /sys/class/net */
+	snprintf(cfg.procstat, 512, "%s%s", cfg.procfspath, STAT);
+	snprintf(cfg.procnetdev, 512, "%s%s", cfg.procfspath, NETDEV);
+	snprintf(cfg.sysclassnet, 512, "%s%s", cfg.sysfspath, CLASSNET);
+
 	strncpy_nt(cfg.dbtzmodifier, DATABASELOCALTIMEMODIFIER, 14);
 	strncpy_nt(cfg.iface, DEFIFACE, MAXIFPARAMLEN);
 	strncpy_nt(cfg.locale, LOCALE, 32);

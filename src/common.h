@@ -226,14 +226,29 @@ and most can be changed later from the config file.
 /* don't use values below 2 */
 #define LIVETIME 2
 
-/* /proc/net/dev */
-#ifndef PROCNETDEV
-#define PROCNETDEV "/proc/net/dev"
+/* /proc */
+#ifndef PROCFSPATH
+#define PROCFSPATH "/proc"
 #endif
 
-/* /sys/class/net */
-#ifndef SYSCLASSNET
-#define SYSCLASSNET "/sys/class/net"
+/* /stat */
+#ifndef STAT
+#define STAT "/stat"
+#endif
+
+/* /net/dev */
+#ifndef NETDEV
+#define NETDEV "/net/dev"
+#endif
+
+/* /sys */
+#ifndef SYSFSPATH
+#define SYSFSPATH "/sys"
+#endif
+
+/* /class/net */
+#ifndef CLASSNET
+#define CLASSNET "/class/net"
 #endif
 
 /* daemon defaults */
@@ -322,6 +337,8 @@ typedef struct {
 	char iface[MAXIFPARAMLEN];
 	char locale[32];
 	char dbdir[512], dbtzmodifier[14];
+	char procfspath[256], sysfspath[256];
+	char procstat[512], procnetdev[512], sysclassnet[512];
 	char rxchar[2], txchar[2], rxhourchar[2], txhourchar[2], estimatetext[10];
 	char cbg[8], cedge[8], cheader[8], cheadertitle[8], cheaderdate[8], ctext[8];
 	char cline[8], clinel[8], cvnstat[8], crx[8], crxd[8], ctx[8], ctxd[8];
