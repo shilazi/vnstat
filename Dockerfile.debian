@@ -1,0 +1,29 @@
+FROM debian:bookworm as builder
+
+RUN set -x \
+    && apt update \
+    && apt install --no-install-recommends \
+        -y -q ca-certificates gcc make libsqlite3-dev
+
+ADD src/ src/
+ADD man/ man/
+ADD config* compile missing depcomp Makefile.in install-sh ./
+
+RUN ./configure \
+    && make \
+    && ./vnstat --showconfig | tee vnstat.conf
+
+# ---------- 8< ----------
+
+# only for store binary
+FROM bitnami/minideb:bookworm
+
+RUN set -x \
+    && apt update \
+    && apt install --no-install-recommends \
+        -y -q ca-certificates tzdata libsqlite3-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /vnstat /usr/bin/vnstat
+COPY --from=builder /vnstatd /usr/sbin/vnstatd
+COPY --from=builder /vnstat.conf /etc/vnstat.conf
